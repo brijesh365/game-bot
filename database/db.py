@@ -25,13 +25,13 @@ def run_query(query):
 
 
 def fetch_user_id(name):
-    queryset = run_query(f'SELECT id from user where name="{name}"')
+    queryset = run_query(f'SELECT id from "user" where name="{name}"')
     output = queryset.fetchone()
     return output[0] if output else None
 
 
 def create_user(name):
-    queryset = run_query(f'INSERT INTO user (name) VALUES ("{name}")')
+    queryset = run_query(f'INSERT INTO "user" (name) VALUES ("{name}")')
     return queryset.fetchone()
 
 
@@ -40,7 +40,7 @@ def save_keyword(username, keyword):
     if not user_id:
         user_id = create_user(username)
     run_query(
-        f'INSERT INTO history (user_id, keyword) VALUES ("{user_id}", "{keyword}" ON CONFLICT ON CONSTRAINT user_keyword_constraint DO UPDATE SET updated_on = NOW()'
+        f'INSERT INTO "history" (user_id, keyword, updated_on) VALUES ("{user_id}", "{keyword}", NOW()) ON CONFLICT ON CONSTRAINT user_keyword_constraint DO UPDATE SET updated_on = NOW()'
     )
 
 
@@ -49,7 +49,7 @@ def fetch_history(username, keyword):
     if not user_id:
         user_id = create_user(username)
     queryset = run_query(
-        f'SELECT keyword from history where user_id="{user_id}" and keyword LIKE "%{keyword}%" ORDER BY updated_on DESC'
+        f'SELECT keyword from "history" where user_id="{user_id}" and keyword LIKE "%{keyword}%" ORDER BY updated_on DESC'
     )
     output = queryset.fetchall()
     return ', '.join((ele[0] for ele in output))
