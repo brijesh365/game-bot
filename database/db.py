@@ -1,14 +1,16 @@
 import psycopg2
 
+import settings
+
 
 def run_query(query):
     print(query)
     try:
-        connection = psycopg2.connect(user="jkkfsrnjtmeyat",
-                                      password="b2d8098aa62c8e3b99199a4dda5dbb83ae1cdf9d2d4cf7d960715d7451da4a6d",
-                                      host="ec2-174-129-33-14.compute-1.amazonaws.com",
+        connection = psycopg2.connect(user=settings.DB_USERNAME,
+                                      password=settings.DB_PASSWORD,
+                                      host=settings.DB_HOST,
                                       port="5432",
-                                      database="d9f2m20h3n4q4h")
+                                      database=settings.DB_NAME)
     except (Exception, psycopg2.Error) as error:
         print("Error while connecting to PostgreSQL", error)
     else:
