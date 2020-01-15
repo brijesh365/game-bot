@@ -2,22 +2,22 @@ from database import db
 
 
 def create_tables():
-    db.run_query('''CREATE TABLE IF NOT EXISTS user
-             (ID INTEGER  PRIMARY KEY  AUTOINCREMENT,
-             NAME  TEXT  NOT NULL
-             )
-    ''')
+    db.run_query('''
+    CREATE TABLE IF NOT EXISTS "user" (
+        ID SERIAL PRIMARY KEY NOT NULL,
+        NAME  TEXT  NOT NULL
+    );
+''')
 
 
 def search_history():
-    db.run_query('''CREATE TABLE IF NOT EXISTS history
-                 (ID INTEGER  PRIMARY KEY  AUTOINCREMENT,
-                 user_id INT,
+    db.run_query('''CREATE TABLE IF NOT EXISTS "history"
+                 (ID SERIAL PRIMARY KEY,
+                 user_id INTEGER REFERENCES "user"(id) ON DELETE CASCADE,
                  keyword  TEXT  NOT NULL,
-                 FOREIGN KEY (user_id)
-                REFERENCES parent(id)
-                ON DELETE CASCADE
-                 )
+                 updated_on TIMESTAMP NOT NULL default CURRENT_TIMESTAMP,
+                 CONSTRAINT user_keyword_constraint UNIQUE(user_id, keyword)
+                 );
         ''')
 
 
