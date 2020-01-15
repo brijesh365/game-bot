@@ -4,7 +4,6 @@ import settings
 
 
 def run_query(query):
-    print(query)
     try:
         connection = psycopg2.connect(user=settings.DB_USERNAME,
                                       password=settings.DB_PASSWORD,
@@ -25,7 +24,7 @@ def run_query(query):
 
 
 def fetch_user_id(name):
-    queryset = run_query(f'SELECT id from "user" where name="{name}"')
+    queryset = run_query(f'SELECT "id" from "user" where name="{name}"')
     output = queryset.fetchone()
     return output[0] if output else None
 
