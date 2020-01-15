@@ -1,2 +1,2 @@
-worker: python migrate.py
+release: python migrate.py
 worker: python bot.py
