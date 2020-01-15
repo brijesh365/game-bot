@@ -9,16 +9,17 @@ def run_query(query):
                                       host="ec2-174-129-33-14.compute-1.amazonaws.com",
                                       port="5432",
                                       database="d9f2m20h3n4q4h")
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgreSQL", error)
+    else:
         connection.autocommit = True
         cursor = connection.cursor()
         cursor.execute(query)
         return cursor
-    except (Exception, psycopg2.Error) as error:
-        print("Error while connecting to PostgreSQL", error)
-    finally:
-        if (connection):
-            cursor.close()
-            connection.close()
+    # finally:
+    #     if (connection):
+    #         cursor.close()
+    #         connection.close()
 
 
 def fetch_user_id(name):
