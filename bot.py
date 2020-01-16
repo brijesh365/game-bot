@@ -18,9 +18,6 @@ async def on_ready():
 async def on_message(message):
     if message.content.lower() == 'hi':
         await message.channel.send(HELLO_RESPONSE)
-
-    if not db.fetch_user_id(message.author.name):
-        db.create_user(message.author.name)
     await bot.process_commands(message)
 
 
