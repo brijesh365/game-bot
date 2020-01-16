@@ -17,10 +17,6 @@ def run_query(query):
         cursor = connection.cursor()
         cursor.execute(query)
         return cursor
-    # finally:
-    #     if (connection):
-    #         cursor.close()
-    #         connection.close()
 
 
 def fetch_user_id(name):
