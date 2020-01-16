@@ -1,36 +1,46 @@
-import psycopg2
-
-import settings
+from database import connection
 
 
 def run_query(query):
-    try:
-        connection = psycopg2.connect(user=settings.DB_USERNAME,
-                                      password=settings.DB_PASSWORD,
-                                      host=settings.DB_HOST,
-                                      port="5432",
-                                      database=settings.DB_NAME)
-    except (Exception, psycopg2.Error) as error:
-        print("Error while connecting to PostgreSQL", error)
-    else:
-        connection.autocommit = True
-        cursor = connection.cursor()
-        cursor.execute(query)
-        return cursor
+    """Runs the given query on database.
+
+    :param query: Query needs to be run database
+    :return: Database cursor
+    """
+    conn = connection.get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(query)
+    return cursor
 
 
 def fetch_user_id(name):
+    """Fetches the user ID.
+
+    :param name: The name of user for whom ID needs to fetch.
+    :return: The user ID or None.
+    """
     queryset = run_query(f"SELECT id from users where name='{name}'")
     output = queryset.fetchone()
     return output[0] if output else None
 
 
 def create_user(name):
+    """Creates user in database.
+
+    :param name: Name of the user.
+    :return: The ID of newly created user.
+    """
     queryset = run_query(f'INSERT INTO users (name) VALUES (\'{name}\') RETURNING id')
     return queryset.fetchone()[0]
 
 
 def save_keyword(username, keyword):
+    """Saves the search keyword for a given user.
+
+    :param username: Name of the user.
+    :param keyword: The search keyword.
+    :return: None
+    """
     user_id = fetch_user_id(username)
     if not user_id:
         user_id = create_user(username)
@@ -40,6 +50,12 @@ def save_keyword(username, keyword):
 
 
 def fetch_history(username, keyword):
+    """Fetches most recent search history for a given user and for given keyword.
+
+    :param username: Name of the user.
+    :param keyword: The search keyword.
+    :return: Top 5 search results.
+    """
     user_id = fetch_user_id(username)
     if not user_id:
         user_id = create_user(username)

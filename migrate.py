@@ -1,7 +1,14 @@
+"""
+Creates initial tables required by the app.
+"""
 from database import db
 
 
-def create_tables():
+def create_users_tables():
+    """Creates Users table
+
+    :return: None
+    """
     db.run_query('''
     CREATE TABLE IF NOT EXISTS users (
         ID SERIAL PRIMARY KEY NOT NULL,
@@ -10,7 +17,11 @@ def create_tables():
 ''')
 
 
-def search_history():
+def create_search_history():
+    """Create history table.
+
+    :return: None
+    """
     db.run_query('''CREATE TABLE IF NOT EXISTS history
                  (ID SERIAL PRIMARY KEY,
                  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
@@ -22,5 +33,5 @@ def search_history():
 
 
 if __name__ == '__main__':
-    create_tables()
-    search_history()
+    create_users_tables()
+    create_search_history()

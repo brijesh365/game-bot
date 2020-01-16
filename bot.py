@@ -4,7 +4,8 @@ import google_search
 import settings
 from database import db
 
-EMPTY_HISTORY = 'No recent queries found!'
+SEARCH_PARAMETER_REQUIRED = 'Search parameter is mandatory!'
+EMPTY_HISTORY = 'No recent queries found matching for given keyword!'
 HELLO_RESPONSE = 'hello'
 bot = commands.Bot(command_prefix=settings.COMMAND_PREFIX)
 
@@ -22,15 +23,21 @@ async def on_message(message):
 
 
 @bot.command(pass_context=True)
-async def google(ctx, keyword):
-    db.save_keyword(ctx.message.author.name, keyword)
-    await ctx.send(f'{google_search.search(keyword)}')
+async def google(ctx, keyword=None):
+    if keyword:
+        db.save_keyword(ctx.message.author.name, keyword)
+        await ctx.send(f'{google_search.search(keyword)}')
+    else:
+        await ctx.send(SEARCH_PARAMETER_REQUIRED)
 
 
 @bot.command(pass_context=True)
-async def recent(ctx, keyword):
-    output = db.fetch_history(ctx.message.author.name, keyword)
-    await ctx.send(output if output else EMPTY_HISTORY)
+async def recent(ctx, keyword=None):
+    if keyword:
+        output = db.fetch_history(ctx.message.author.name, keyword)
+        await ctx.send(output if output else EMPTY_HISTORY)
+    else:
+        await ctx.send(SEARCH_PARAMETER_REQUIRED)
 
 
 bot.run(settings.DISCORD_TOKEN)
